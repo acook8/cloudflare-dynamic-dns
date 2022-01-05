@@ -2,7 +2,9 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ main ]
+    branches:
+    - main
+    - github-actions
   pull_request:
     branches: [ main ]
 
@@ -25,4 +27,4 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: acook8/cloudflare-dynamic-dns:${{ env.GITHUB_RUN_NUMBER}}
+          tags: acook8/cloudflare-dynamic-dns:${{ env.GITHUB_RUN_NUMBER }}
