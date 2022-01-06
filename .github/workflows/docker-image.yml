@@ -2,14 +2,27 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ main ]
+    branches:
+    - main
   pull_request:
     branches: [ main ]
 
 jobs:
-
+  tag:
+    name: Tag
+    runs-on: ubuntu-latest
+    outputs:
+      new_tag: ${{ steps.tag_version.outputs.new_tag }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v5.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tag_prefix: ""
   build:
-
+    needs: [tag]
     runs-on: ubuntu-latest
 
     steps:
@@ -25,4 +38,4 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: acook8/cloudflare-dynamic-dns:${{ env.GITHUB_RUN_NUMBER}}
+          tags: acook8/cloudflare-dynamic-dns:${{needs.tag.outputs.new_tag}}
